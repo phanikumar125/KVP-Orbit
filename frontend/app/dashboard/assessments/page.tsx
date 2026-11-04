@@ -1,0 +1,8 @@
+"use client";
+import Link from "next/link";
+import { Clock3, Play } from "lucide-react";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
+import { Card } from "@/components/ui";
+type Assessment = { id:number; title:string; description:string; duration_minutes:number; question_count:number };
+export default function AssessmentsPage() { const [items, setItems] = useState<Assessment[]>([]); useEffect(() => { api.get("/api/assessments").then((r) => setItems(r.data)).catch(() => undefined); }, []); return <div className="mx-auto max-w-5xl"><p className="text-xs font-bold uppercase tracking-[.16em] text-coral">Practice studio</p><h1 className="mt-2 text-4xl font-semibold tracking-[-.05em]">Assess your readiness.</h1><p className="mt-2 text-slate-500">Short, focused checks for the habits that make a strong candidate.</p><div className="mt-8 grid gap-5 md:grid-cols-2">{items.map((item) => <Card key={item.id} className="p-6" hover><div className="flex items-start justify-between"><span className="grid h-11 w-11 place-items-center rounded-xl bg-sage text-moss"><Clock3 size={19}/></span><span className="text-xs text-slate-400">{item.duration_minutes} min</span></div><h2 className="mt-6 text-xl font-semibold">{item.title}</h2><p className="mt-2 text-sm leading-6 text-slate-500">{item.description}</p><p className="mt-5 text-xs font-bold uppercase tracking-wider text-moss">{item.question_count} questions</p><Link href={`/dashboard/assessments/${item.id}`} className="mt-6 inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-3 text-sm font-bold text-white"><Play size={15}/>Start assessment</Link></Card>)}</div></div>; }
